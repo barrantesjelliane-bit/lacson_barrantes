@@ -3,6 +3,7 @@ package com.example.unscrambleapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,19 +12,23 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import com.example.unscrambleapp.ui.theme.UnscrambleAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge()
         setContent {
-            GameScreen()
+            UnscrambleAppTheme {
+                GameScreen()
+            }
         }
     }
 }
@@ -42,13 +47,19 @@ fun GameScreen() {
     )
 
     var currentWordIndex by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
     val correctAnswer = words[currentWordIndex]
 
+    var scrambledWord by remember {
+        mutableStateOf(
+            words[0].toList().shuffled().joinToString("")
+        )
+    }
+
     var score by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
     Column(
@@ -63,7 +74,7 @@ fun GameScreen() {
         )
 
         Text(
-            text = correctAnswer,
+            text = scrambledWord,
             fontSize = 40.sp
         )
 
@@ -83,12 +94,16 @@ fun GameScreen() {
 
         Button(
             onClick = {
-                if (userAnswer == correctAnswer) {
+                if (userAnswer.trim().equals(correctAnswer, ignoreCase = true)) {
                     score++
 
                     if (currentWordIndex < words.size - 1) {
                         currentWordIndex++
                         userAnswer = ""
+                        scrambledWord = words[currentWordIndex]
+                            .toList()
+                            .shuffled()
+                            .joinToString("")
                     }
                 }
             }
