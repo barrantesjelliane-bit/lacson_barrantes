@@ -10,6 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
@@ -26,6 +30,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GameScreen() {
+
+    // Phase 2: Create a state variable
+    var userAnswer by remember {
+        mutableStateOf("")
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -47,14 +56,18 @@ fun GameScreen() {
             text = "Unscramble the word!"
         )
 
+        // Phase 2: Connect the TextField to userAnswer
         OutlinedTextField(
-            value = "",
-            onValueChange = { },
+            value = userAnswer,
+            onValueChange = {
+                userAnswer = it
+            },
             label = {
                 Text("Enter your answer")
             }
         )
 
+        // Still unchanged in Phase 2
         Button(
             onClick = { }
         ) {
