@@ -31,9 +31,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GameScreen() {
 
-    // Phase 2: Create a state variable
     var userAnswer by remember {
         mutableStateOf("")
+    }
+
+    val correctAnswer = "CAT"
+
+    var score by remember {
+        mutableStateOf(0)
     }
 
     Column(
@@ -56,7 +61,6 @@ fun GameScreen() {
             text = "Unscramble the word!"
         )
 
-        // Phase 2: Connect the TextField to userAnswer
         OutlinedTextField(
             value = userAnswer,
             onValueChange = {
@@ -67,15 +71,18 @@ fun GameScreen() {
             }
         )
 
-        // Still unchanged in Phase 2
         Button(
-            onClick = { }
+            onClick = {
+                if (userAnswer == correctAnswer) {
+                    score++
+                }
+            }
         ) {
             Text("SUBMIT")
         }
 
         Text(
-            text = "Score: 0"
+            text = "Score: $score"
         )
     }
 }
