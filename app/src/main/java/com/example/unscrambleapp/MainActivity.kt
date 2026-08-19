@@ -22,9 +22,12 @@ import androidx.compose.ui.unit.sp
 import com.example.unscrambleapp.ui.theme.UnscrambleAppTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
+
         setContent {
             UnscrambleAppTheme {
                 GameScreen()
@@ -54,12 +57,29 @@ fun GameScreen() {
 
     var scrambledWord by remember {
         mutableStateOf(
-            words[0].toList().shuffled().joinToString("")
+            words[0].toList()
+                .shuffled()
+                .joinToString("")
         )
     }
 
     var score by remember {
         mutableIntStateOf(0)
+    }
+
+    fun nextWord() {
+
+        if (currentWordIndex < words.size - 1) {
+
+            currentWordIndex++
+
+            userAnswer = ""
+
+            scrambledWord = words[currentWordIndex]
+                .toList()
+                .shuffled()
+                .joinToString("")
+        }
     }
 
     Column(
@@ -94,20 +114,21 @@ fun GameScreen() {
 
         Button(
             onClick = {
-                if (userAnswer.trim().equals(correctAnswer, ignoreCase = true)) {
+
+                if (
+                    userAnswer.equals(
+                        correctAnswer,
+                        ignoreCase = true
+                    )
+                ) {
+
                     score++
 
-                    if (currentWordIndex < words.size - 1) {
-                        currentWordIndex++
-                        userAnswer = ""
-                        scrambledWord = words[currentWordIndex]
-                            .toList()
-                            .shuffled()
-                            .joinToString("")
-                    }
+                    nextWord()
                 }
             }
         ) {
+
             Text("SUBMIT")
         }
 
